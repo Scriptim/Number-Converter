@@ -42,6 +42,16 @@ public class Main {
     text10.addActionListener(new ReturnListener());
     text16.addActionListener(new ReturnListener());
 
+    text2.setToolTipText("0-1");
+    text8.setToolTipText("0-7");
+    text10.setToolTipText("0-9");
+    text16.setToolTipText("0-9, a-f, A-F");
+
+    text2.setDocument(makeDocument(text2, "01"));
+    text8.setDocument(makeDocument(text8, "01234567"));
+    text10.setDocument(makeDocument(text10, "0123456789"));
+    text16.setDocument(makeDocument(text16, "0123456789abcdefABCDEF"));
+
     frame.setTitle("Number Converter by Scriptim");
     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     frame.setLayout(new GridLayout(8, 1));
@@ -100,6 +110,37 @@ public class Main {
     nums[3] = num.toString(16);
 
     return nums;
+
+  }
+
+	private static AbstractDocument makeDocument(JTextField text, String valid) {
+
+    AbstractDocument doc = (AbstractDocument) text.getDocument();
+    DocumentFilter filter = new DocumentFilter() {
+      
+			@Override
+      public void insertString(DocumentFilter.FilterBypass fb, int offset, String string, AttributeSet attr)
+          throws BadLocationException {
+        StringBuilder builder = new StringBuilder(string);
+        for (int i = builder.length() - 1; i >= 0; i--) {
+          char c = builder.charAt(i);
+          if(valid.indexOf(c) < 0) {
+            builder.deleteCharAt(i);
+          }
+        }
+        super.insertString(fb, offset, builder.toString(), attr);
+      }
+
+      @Override
+      public void replace(DocumentFilter.FilterBypass fb, int offset, int length, String string, AttributeSet attr)
+          throws BadLocationException {
+        if (length > 0) fb.remove(offset, length);
+        insertString(fb, offset, string, attr);
+      }
+    };
+
+    doc.setDocumentFilter(filter);
+    return doc;
 
   }
 
