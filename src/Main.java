@@ -37,6 +37,11 @@ public class Main {
     label10.setLabelFor(text10);
     label16.setLabelFor(text16);
 
+    text2.addActionListener(new ReturnListener());
+    text8.addActionListener(new ReturnListener());
+    text10.addActionListener(new ReturnListener());
+    text16.addActionListener(new ReturnListener());
+
     frame.setTitle("Number Converter by Scriptim");
     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     frame.setLayout(new GridLayout(8, 1));
@@ -53,6 +58,48 @@ public class Main {
     frame.add(text16);
 
     frame.setVisible(true);
+
+  }
+
+  private static class ReturnListener implements ActionListener {
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+      String[] results;
+
+      if (e.getSource() == Main.text2) {
+        results = convert(text2.getText(), 2);
+      } else if (e.getSource() == Main.text8) {
+        results = convert(text8.getText(), 8);
+      } else if (e.getSource() == Main.text10) {
+        results = convert(text10.getText(), 10);
+      } else if (e.getSource() == Main.text16) {
+        results = convert(text16.getText(), 16);
+      } else {
+        results = new String[]{"0", "0", "0", "0"};
+      }
+
+      text2.setText(results[0]);
+      text8.setText(results[1]);
+      text10.setText(results[2]);
+      text16.setText(results[3]);
+
+    }
+
+  }
+
+  private static String[] convert(String input, int base) {
+
+    String[] nums = new String[4];
+    BigInteger num = input.isEmpty() ? new BigInteger("0") : new BigInteger(input, base);
+
+    nums[0] = num.toString(2);
+    nums[1] = num.toString(8);
+    nums[2] = num.toString(10);
+    nums[3] = num.toString(16);
+
+    return nums;
 
   }
 
